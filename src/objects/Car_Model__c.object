@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Vroom vroom</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Body_Style__c</fullName>
+        <externalId>false</externalId>
+        <label>Body Style</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Cargo Van</fullName>
+                    <default>false</default>
+                    <label>Cargo Van</label>
+                </value>
+                <value>
+                    <fullName>Convertible</fullName>
+                    <default>false</default>
+                    <label>Convertible</label>
+                </value>
+                <value>
+                    <fullName>Coupe</fullName>
+                    <default>false</default>
+                    <label>Coupe</label>
+                </value>
+                <value>
+                    <fullName>Crew Cab Pickup</fullName>
+                    <default>false</default>
+                    <label>Crew Cab Pickup</label>
+                </value>
+                <value>
+                    <fullName>Extended Cab Pickup</fullName>
+                    <default>false</default>
+                    <label>Extended Cab Pickup</label>
+                </value>
+                <value>
+                    <fullName>Hatchback</fullName>
+                    <default>false</default>
+                    <label>Hatchback</label>
+                </value>
+                <value>
+                    <fullName>Minivan</fullName>
+                    <default>false</default>
+                    <label>Minivan</label>
+                </value>
+                <value>
+                    <fullName>Passenger Van</fullName>
+                    <default>false</default>
+                    <label>Passenger Van</label>
+                </value>
+                <value>
+                    <fullName>Regular Cab Pickup</fullName>
+                    <default>false</default>
+                    <label>Regular Cab Pickup</label>
+                </value>
+                <value>
+                    <fullName>Sedan</fullName>
+                    <default>false</default>
+                    <label>Sedan</label>
+                </value>
+                <value>
+                    <fullName>SUV</fullName>
+                    <default>false</default>
+                    <label>SUV</label>
+                </value>
+                <value>
+                    <fullName>Wagon</fullName>
+                    <default>false</default>
+                    <label>Wagon</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Model_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Model Year</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>2017</fullName>
+                    <default>false</default>
+                    <label>2017</label>
+                </value>
+                <value>
+                    <fullName>2018</fullName>
+                    <default>false</default>
+                    <label>2018</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Car Model</label>
+    <nameField>
+        <label>Car Model Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Car Models</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>
