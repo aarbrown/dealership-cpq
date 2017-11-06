@@ -10,7 +10,7 @@ MAINTAINER Michael Haught
 
 # handle the basics
 RUN apt-get -y update \
-    && apt-get -y upgrade
+    && apt-get -y upgrade \
     && apt-get -y install locales build-essential libpng-dev libxml2 rubygems ruby-dev gcc libffi-dev make git puppet wget
 
 RUN cd $HOME
