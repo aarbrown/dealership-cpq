@@ -1,4 +1,11 @@
 #!/usr/bin/env groovy
-node {
-  echo "Hello World!"
+pipeline {
+  agent { dockerfile true }
+  stages {
+    stage('Code Analysis') {
+      steps {
+        pmd -d src/classes -f text -R config/pmd.xml
+      }
+    }
+  }
 }

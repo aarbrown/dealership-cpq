@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<ruleset name="force.com ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>
+        A PMD ruleset for detecting force.com best practice violations
+    </description>
+
+    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/apexunit.html -->
+    <!--
+    <rule ref="rulesets/apex/apexunit.xml" />
+    -->
+
+    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/complexity.html -->
+    <rule ref="rulesets/apex/complexity.xml" />
+
+    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/performance.html -->
+    <rule ref="rulesets/apex/performance.xml" />
+
+    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/security.html -->
+    <rule ref="rulesets/apex/security.xml" />
+
+    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/style.html -->
+    <rule ref="rulesets/apex/style.xml" />
+</ruleset>
