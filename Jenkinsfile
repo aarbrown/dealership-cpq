@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Code Analysis') {
       steps {
-        pmd -d src/classes -f text -R config/pmd.xml
+        sh 'pmd -d src/classes -f text -R config/pmd.xml'
       }
     }
   }
