@@ -16,4 +16,5 @@ RUN apt-get -y update \
 RUN cd $HOME
 RUN wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F5.8.1/pmd-bin-5.8.1.zip
 RUN unzip pmd-bin-5.8.1.zip
+RUN ls -la $HOME/pmd-bin-5.8.1/bin
 RUN alias pmd="$HOME/pmd-bin-5.8.1/bin/run.sh pmd"
