@@ -8,9 +8,9 @@
     </description>
 
     <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/apexunit.html -->
-    <!--
     <rule ref="rulesets/apex/apexunit.xml" />
-    -->
+
+    <rule ref="rulesets/apex/braces.xml" />
 
     <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/complexity.html -->
     <rule ref="rulesets/apex/complexity.xml" />
@@ -23,4 +23,6 @@
 
     <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/style.html -->
     <rule ref="rulesets/apex/style.xml" />
+
+    <rule ref="rulesets/vf/security.xml" />
 </ruleset>
