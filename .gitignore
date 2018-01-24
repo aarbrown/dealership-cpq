@@ -1,1 +1,6 @@
 pmd-result.xml
+.DS_Store
+ApexUnitReport.xml
+build/lib
+build/Report
+build/build.properties

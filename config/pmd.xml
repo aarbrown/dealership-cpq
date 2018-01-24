@@ -8,21 +8,12 @@
     </description>
 
     <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/apexunit.html -->
-    <rule ref="rulesets/apex/apexunit.xml" />
+    <rule ref="category/apex/bestpractices.xml" />
+    <rule ref="category/apex/security.xml" />
+    <rule ref="category/apex/codestyle.xml" />
+    <rule ref="category/apex/design.xml" />
+    <rule ref="category/apex/errorprone.xml" />
+    <rule ref="category/apex/performance.xml" />
 
-    <rule ref="rulesets/apex/braces.xml" />
-
-    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/complexity.html -->
-    <rule ref="rulesets/apex/complexity.xml" />
-
-    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/performance.html -->
-    <rule ref="rulesets/apex/performance.xml" />
-
-    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/security.html -->
-    <rule ref="rulesets/apex/security.xml" />
-
-    <!-- More info: https://pmd.github.io/pmd-5.5.5/pmd-apex/rules/apex/style.html -->
-    <rule ref="rulesets/apex/style.xml" />
-
-    <rule ref="rulesets/vf/security.xml" />
+    <rule ref="category/vf/security.xml" />
 </ruleset>

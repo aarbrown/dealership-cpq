@@ -1,0 +1,156 @@
+<project name="GOC" default="build" basedir="." xmlns:sf="antlib:com.salesforce" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <!-- ============================
+          CONFIG
+         ============================ -->
+    <property file="build.properties"/>
+    <property environment="env"/>
+
+    <path id="test-path">
+        <fileset dir="lib/test">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <path id="analysis-path">
+        <fileset dir="lib/analysis">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <!-- ============================
+          SALESFORCE
+         ============================ -->
+    <target name="retrieveUnpackaged">
+        <echo message="Login user : ${sf.username}" />
+        <echo message="Login server : ${sf.serverurl}" />
+        <sf:retrieve username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" singlePackage="true" retrieveTarget="../${retrieveDir}" unpackaged="../${retrieveDir}/package.xml"/>
+    </target>
+
+    <target name="deployAll">
+        <delete>
+            <fileset dir="../${dev.directory}" includes="**/.DS_Store"/>
+        </delete>
+        <echo message="Login user : ${sf.username}" />
+        <echo message="Login server : ${sf.serverurl}" />
+        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${dev.directory}" singlePackage="true" maxPoll="5000" ignoreWarnings="true"/>
+    </target>
+
+    <target name="deployCodeCheckOnly">
+        <delete>
+            <fileset dir="../${dev.directory}" includes="**/.DS_Store"/>
+        </delete>
+        <echo message="Login user : ${sf.username}" />
+        <echo message="Login server : ${sf.serverurl}" />
+      <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${dev.directory}" maxPoll="5000" checkOnly="true" ignoreWarnings="true"/>
+    </target>
+
+    <target name="undeploy"  description="used to remove deployed code">
+        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${undeploy.directory}" singlepackage="true" maxpoll="5000" runalltests="false"></sf:deploy>
+    </target>
+
+    <target name="undeployCheckOnly"  description="used to make sure an undeploy of code will work properly">
+        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${undeploy.directory}" singlepackage="true" checkonly="true" maxpoll="2000" runalltests="false"></sf:deploy>
+    </target>
+
+    <!-- ============================
+          IVY SETUP
+         ============================ -->
+    <!-- Downloads and adds Ivy to your Ant classpath -->
+    <target name="bootstrap" description="Install ivy">
+        <mkdir dir="${user.home}/.ant/lib"/>
+        <get dest="${user.home}/.ant/lib/ivy.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"/>
+    </target>
+
+    <!-- Utility target useful for converting from POM to Ivy file for local resolver -->
+    <target name="convertPomToIvy">
+        <ivy:convertpom pomFile="pom.xml" ivyFile="ivy-converted.xml" />
+    </target>
+
+    <!-- Required before running any of the build steps - this downloads dependencies
+         and moves them into the build/lib directory -->
+    <target name="resolve" description="Retrieve dependencies with Ivy.">
+        <ivy:resolve log="download-only" />
+        <ivy:retrieve type="jar,bundle" pattern="lib/[conf]/[artifact]-[revision].[ext]"/>
+    </target>
+
+    <!-- ============================
+          ANALYSIS
+         ============================ -->
+    <!-- Executes checkstyle -->
+    <target name="check" depends="resolve" description="Run Checkstyle.">
+        <taskdef resource="checkstyletask.properties"
+                 classpathref="analysis-path"/>
+        <checkstyle config="checkstyle.xml">
+            <fileset dir="${src.dir}" includes="**/*.java"/>
+            <classpath path="${build.dir}/classes"/>
+        </checkstyle>
+    </target>
+
+    <!-- Executes PMD against Apex and Visualforce -->
+    <target name="pmd-build" depends="resolve" description="Run PMD on the code.">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
+                 classpathref="analysis-path"/>
+        <pmd failonerror="true" maxRuleViolations="1">
+            <ruleset>../config/pmd.xml</ruleset>
+            <formatter type="text" toConsole="true"/>
+            <fileset dir="../${dev.directory}">
+                <include name="**/*.cls"/>
+                <include name="**/*.trigger"/>
+                <include name="**/*.page"/>
+                <include name="**/*.component"/>
+            </fileset>
+        </pmd>
+    </target>
+
+    <!-- Runs all analysis steps -->
+    <target name="analyze" depends="pmd-build"
+            description="Run all static analysis tools."/>
+
+    <!-- ============================
+          TESTS
+         ============================ -->
+    <!-- Executes unit tests and calculates code coverage -->
+    <target name="test" depends="resolve" description="Execute ApexUnit.">
+        <java jar="lib/test/ApexUnit-core-2.3.6.jar" fork="true" failonerror="true">
+          <arg line="-org.login.url '${sf.serverurl}'"/>
+          <arg line="-org.username '${sf.username}'"/>
+          <arg line="-org.password '${sf.password}'"/>
+          <arg line="-org.client.id '${apexunit.client.id}'"/>
+          <arg line="-org.client.secret '${apexunit.client.secret}'"/>
+          <arg line="-regex.for.selecting.test.classes.to.execute '*Test*'"/>
+          <arg line="-regex.for.selecting.source.classes.for.code.coverage.computation '*'"/>
+        </java>
+    </target>
+
+    <!-- ============================
+          BUILD
+         ============================ -->
+    <target name="build" depends="analyze,test"
+            description="Executes analysis, tests, and does a check deploy against the build org">
+
+        <delete>
+            <fileset dir="../${dev.directory}" includes="**/.DS_Store"/>
+        </delete>
+        <echo message="Login user : ${sf.build.username}" />
+        <echo message="Login server : ${sf.build.serverurl}" />
+        <sf:deploy username="${sf.build.username}" password="${sf.build.password}" serverurl="${sf.build.serverurl}" deployroot="../${dev.directory}" maxPoll="${sf.maxPoll}" checkOnly="true" ignoreWarnings="false"/>
+    </target>
+
+    <!-- ============================
+          CLEAN
+         ============================ -->
+    <!-- Cleans up the file system -->
+    <target name="clean" description="Cleanup build files">
+        <delete dir="lib"/>
+        <delete dir="Report"/>
+        <delete file="ApexUnitReport.xml"/>
+        <delete file="pmd-result.xml"/>
+    </target>
+
+    <!-- Cleans up the file system and deletes the Ivy cache -->
+    <target name="clean-all" depends="clean" description="Additionally purge ivy cache">
+        <ivy:cleancache/>
+    </target>
+
+</project>
