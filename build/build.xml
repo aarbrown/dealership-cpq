@@ -5,15 +5,21 @@
          ============================ -->
     <property file="build.properties"/>
     <property environment="env"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="apexunit.regex.tests" value="*Test*"/>
+    <property name="apexunit.regex.sources" value="*"/>
+    <property name="pmd.maxRuleViolations" value="1"/>
+    <property name="pmd.rulesets" value="config/pmd.xml"/>
 
     <path id="test-path">
-        <fileset dir="lib/test">
+        <fileset dir="${lib.dir}/test">
             <include name="**/*.jar" />
         </fileset>
     </path>
 
     <path id="analysis-path">
-        <fileset dir="lib/analysis">
+        <fileset dir="${lib.dir}/analysis">
             <include name="**/*.jar" />
         </fileset>
     </path>
@@ -24,33 +30,33 @@
     <target name="retrieveUnpackaged">
         <echo message="Login user : ${sf.username}" />
         <echo message="Login server : ${sf.serverurl}" />
-        <sf:retrieve username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" singlePackage="true" retrieveTarget="../${retrieveDir}" unpackaged="../${retrieveDir}/package.xml"/>
+        <sf:retrieve username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" singlePackage="true" retrieveTarget="../${retrieve.dir}" unpackaged="../${retrieve.dir}/package.xml"/>
     </target>
 
     <target name="deployAll">
         <delete>
-            <fileset dir="../${dev.directory}" includes="**/.DS_Store"/>
+            <fileset dir="../${src.dir}" includes="**/.DS_Store"/>
         </delete>
         <echo message="Login user : ${sf.username}" />
         <echo message="Login server : ${sf.serverurl}" />
-        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${dev.directory}" singlePackage="true" maxPoll="5000" ignoreWarnings="true"/>
+        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${src.dir}" singlePackage="true" maxPoll="${sf.maxPoll}" ignoreWarnings="true"/>
     </target>
 
     <target name="deployCodeCheckOnly">
         <delete>
-            <fileset dir="../${dev.directory}" includes="**/.DS_Store"/>
+            <fileset dir="../${src.dir}" includes="**/.DS_Store"/>
         </delete>
         <echo message="Login user : ${sf.username}" />
         <echo message="Login server : ${sf.serverurl}" />
-      <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${dev.directory}" maxPoll="5000" checkOnly="true" ignoreWarnings="true"/>
+      <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${src.dir}" maxPoll="${sf.maxPoll}" checkOnly="true" ignoreWarnings="true"/>
     </target>
 
     <target name="undeploy"  description="used to remove deployed code">
-        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${undeploy.directory}" singlepackage="true" maxpoll="5000" runalltests="false"></sf:deploy>
+        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${undeploy.directory}" singlepackage="true" maxpoll="${sf.maxPoll}" runalltests="false"></sf:deploy>
     </target>
 
     <target name="undeployCheckOnly"  description="used to make sure an undeploy of code will work properly">
-        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${undeploy.directory}" singlepackage="true" checkonly="true" maxpoll="2000" runalltests="false"></sf:deploy>
+        <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" deployroot="../${undeploy.directory}" singlepackage="true" checkonly="true" maxpoll="${sf.maxPoll}" runalltests="false"></sf:deploy>
     </target>
 
     <!-- ============================
@@ -59,7 +65,8 @@
     <!-- Downloads and adds Ivy to your Ant classpath -->
     <target name="bootstrap" description="Install ivy">
         <mkdir dir="${user.home}/.ant/lib"/>
-        <get dest="${user.home}/.ant/lib/ivy.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"/>
+        <get dest="${user.home}/.ant/lib/ivy.jar"
+             src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"/>
     </target>
 
     <!-- Utility target useful for converting from POM to Ivy file for local resolver -->
@@ -71,7 +78,7 @@
          and moves them into the build/lib directory -->
     <target name="resolve" description="Retrieve dependencies with Ivy.">
         <ivy:resolve log="download-only" />
-        <ivy:retrieve type="jar,bundle" pattern="lib/[conf]/[artifact]-[revision].[ext]"/>
+        <ivy:retrieve type="jar,bundle" pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]"/>
     </target>
 
     <!-- ============================
@@ -88,13 +95,13 @@
     </target>
 
     <!-- Executes PMD against Apex and Visualforce -->
-    <target name="pmd-build" depends="resolve" description="Run PMD on the code.">
+    <target name="pmd" depends="resolve" description="Run PMD on the code.">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
                  classpathref="analysis-path"/>
-        <pmd failonerror="true" maxRuleViolations="1">
-            <ruleset>../config/pmd.xml</ruleset>
+        <pmd failonerror="true" maxRuleViolations="${pmd.maxRuleViolations}">
+            <ruleset>${pmd.rulesets}</ruleset>
             <formatter type="text" toConsole="true"/>
-            <fileset dir="../${dev.directory}">
+            <fileset dir="../${src.dir}">
                 <include name="**/*.cls"/>
                 <include name="**/*.trigger"/>
                 <include name="**/*.page"/>
@@ -104,7 +111,7 @@
     </target>
 
     <!-- Runs all analysis steps -->
-    <target name="analyze" depends="pmd-build"
+    <target name="analyze" depends="pmd"
             description="Run all static analysis tools."/>
 
     <!-- ============================
@@ -112,14 +119,14 @@
          ============================ -->
     <!-- Executes unit tests and calculates code coverage -->
     <target name="test" depends="resolve" description="Execute ApexUnit.">
-        <java jar="lib/test/ApexUnit-core-2.3.6.jar" fork="true" failonerror="true">
+        <java classname="com.sforce.cd.apexUnit.ApexUnitRunner" classpathref="test-path" fork="true" failonerror="true">
           <arg line="-org.login.url '${sf.serverurl}'"/>
           <arg line="-org.username '${sf.username}'"/>
           <arg line="-org.password '${sf.password}'"/>
           <arg line="-org.client.id '${apexunit.client.id}'"/>
           <arg line="-org.client.secret '${apexunit.client.secret}'"/>
-          <arg line="-regex.for.selecting.test.classes.to.execute '*Test*'"/>
-          <arg line="-regex.for.selecting.source.classes.for.code.coverage.computation '*'"/>
+          <arg line="-regex.for.selecting.test.classes.to.execute '${apexunit.regex.tests}'"/>
+          <arg line="-regex.for.selecting.source.classes.for.code.coverage.computation '${apexunit.regex.sources}'"/>
         </java>
     </target>
 
@@ -130,11 +137,13 @@
             description="Executes analysis, tests, and does a check deploy against the build org">
 
         <delete>
-            <fileset dir="../${dev.directory}" includes="**/.DS_Store"/>
+            <fileset dir="../${src.dir}" includes="**/.DS_Store"/>
         </delete>
         <echo message="Login user : ${sf.build.username}" />
         <echo message="Login server : ${sf.build.serverurl}" />
-        <sf:deploy username="${sf.build.username}" password="${sf.build.password}" serverurl="${sf.build.serverurl}" deployroot="../${dev.directory}" maxPoll="${sf.maxPoll}" checkOnly="true" ignoreWarnings="false"/>
+        <sf:deploy username="${sf.build.username}" password="${sf.build.password}"
+            serverurl="${sf.build.serverurl}" deployroot="../${src.dir}"
+            maxPoll="${sf.maxPoll}" checkOnly="true" ignoreWarnings="false"/>
     </target>
 
     <!-- ============================
@@ -142,7 +151,7 @@
          ============================ -->
     <!-- Cleans up the file system -->
     <target name="clean" description="Cleanup build files">
-        <delete dir="lib"/>
+        <delete dir="${lib.dir}"/>
         <delete dir="Report"/>
         <delete file="ApexUnitReport.xml"/>
         <delete file="pmd-result.xml"/>

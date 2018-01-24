@@ -1,20 +1,26 @@
 # build.properties
 
+# The location of the Salesforce metadata / source code to analyze and deploy (relative to the project root)
+src.dir = src/
+
+# Salesforce metadata retrieve location (relative to the project root)
+retrieve.dir =
+
 # Specify the login credentials for the desired Salesforce organization
 sf.username =
 sf.password =
 
-# The location of the Salesforce metadata
-dev.directory = src/
-
 # The actual instance url of your org (i.e. https://na73.salesforce.com)
 sf.serverurl =
-
-sf.maxPoll = 20
 
 # Credentials for the org that the deployCodeCheckOnly will be executed against
 sf.build.username =
 sf.build.password =
+
+# The actual instance url of the build org (the org where the deployCodeCheckOnly will be executed against)
+sf.build.serverurl =
+
+sf.maxPoll = 20
 
 # The ApexUnit connected app consumer secret
 apexunit.client.secret =
@@ -22,5 +28,15 @@ apexunit.client.secret =
 # The ApexUnit connected app consumer key
 apexunit.client.id =
 
-# The actual instance url of the build org (the org where the deployCodeCheckOnly will be executed against)
-sf.build.serverurl = 
+# Regular Expression used by ApexUnit to find Test files
+apexunit.regex.tests = *Test*
+
+# Regular Expression used by ApexUnit to find source code for code coverage calculations
+# It is ok if this regular expression includes classes as well as tests for Apex code coverage
+apexunit.regex.sources = *
+
+# Number of rule violations allowed before PMD will fail the build
+pmd.maxRuleViolations = 1
+
+# Location of the PMD ruleset configuration file (relative to the project root)
+pmd.rulesets = config/pmd.xml
