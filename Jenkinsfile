@@ -30,12 +30,8 @@ def updateGithubCommitStatus(build) {
   ])
 }
 node {
-  def dockerImage = docker.build("salesforce:${env.BUILD_ID}")
-
-  dockerImage.inside {
       stage('Static Analysis') {
           sh 'cd build'
           sh 'ant analyze'
       }
-  }
 }
