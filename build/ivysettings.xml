@@ -1,15 +1,17 @@
 <ivysettings>
 	<settings defaultResolver="default-chain"/>
   <property name="nexus-sf-internal" value="http://nexusprod:8080/nexus/content/groups/public"/>
+	<property name="nexus-abdevops" value="https://nexus.abdevops.tk/repository/maven-releases/"/>
 	<resolvers>
-		<filesystem name="local">
+
+		<!--<filesystem name="local">
 			<ivy pattern="${ivy.default.ivy.user.dir}/local/[organisation]/[module]/ivys/ivy-[revision].xml"/>
 			<artifact pattern="${ivy.default.ivy.user.dir}/local/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
-		</filesystem>
-    <ibiblio name="nexus" m2compatible="true" root="${nexus-sf-internal}" checksums=""/>
+		</filesystem>-->
+    <ibiblio name="nexus" m2compatible="true" root="${nexus-abdevops}" checksums=""/>
 		<ibiblio name="ibilio" m2compatible="true"/>
 		<chain name="default-chain">
-			<resolver ref="local"/>
+			<!--<resolver ref="local"/>-->
       <resolver ref="nexus" />
 			<resolver ref="ibilio"/>
 		</chain>
