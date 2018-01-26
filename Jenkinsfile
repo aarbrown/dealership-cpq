@@ -31,6 +31,7 @@ def updateGithubCommitStatus(build) {
 }
 node {
       stage('Static Analysis') {
+          checkout scm
           sh 'cd build'
           sh 'ant analyze'
       }
