@@ -63,11 +63,28 @@
           IVY SETUP
          ============================ -->
     <!-- Downloads and adds Ivy to your Ant classpath -->
-    <target name="bootstrap" description="Install ivy">
+    <target name="install-ivy" description="Install ivy">
         <mkdir dir="${user.home}/.ant/lib"/>
         <get dest="${user.home}/.ant/lib/ivy.jar"
              src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"/>
     </target>
+
+    <!-- Downloads and adds Salesforce migration tool to your Ant classpath -->
+    <target name="install-sf" description="Install ant-migration tool">
+        <mkdir dir="${user.home}/.ant/lib"/>
+        <get dest="salesforce_ant.zip"
+             src="https://gs0.salesforce.com/dwnld/SfdcAnt/salesforce_ant_41.0.zip"/>
+        <unzip src="salesforce_ant.zip" dest="${user.home}/.ant/lib" overwrite="true">
+          <patternset>
+             <include name="ant-salesforce.jar"/>
+          </patternset>
+        </unzip>
+        <delete file="salesforce_ant.zip" />
+    </target>
+
+    <!-- Runs all analysis steps -->
+    <target name="bootstrap" depends="install-ivy,install-sf"
+            description="Run all static analysis tools."/>
 
     <!-- Utility target useful for converting from POM to Ivy file for local resolver -->
     <target name="convertPomToIvy">
@@ -99,7 +116,7 @@
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
                  classpathref="analysis-path"/>
         <pmd failonerror="true" maxRuleViolations="${pmd.maxRuleViolations}">
-            <ruleset>${pmd.rulesets}</ruleset>
+            <ruleset>../${pmd.rulesets}</ruleset>
             <formatter type="text" toConsole="true"/>
             <fileset dir="../${src.dir}">
                 <include name="**/*.cls"/>
