@@ -31,12 +31,13 @@ def updateGithubCommitStatus(build) {
 }
 node {
       stage('Static Analysis') {
+          def antParams = '';
+          antParams += '-Dpmd.maxRuleViolations=1 '
+          antParams += '-Dpmd.rulesets=config/pmd.xml'
           checkout scm
           withAnt(installation: 'ant') {
-              sh 'cd build'
-              sh 'ls -la'
-              sh 'ant bootstrap'
-              sh 'ant analyze'
+              sh 'ant -f build/build.xml bootstrap'
+              sh 'ant -f build/build.xml analyze ' + antParams
           }
       }
 }
