@@ -30,18 +30,16 @@ def updateGithubCommitStatus(build) {
   ])
 }
 node {
-      stage('Static Analysis') {
+      stage('Checkout') {
           checkout scm
-          withAnt(installation: 'ant') {
-              sh 'ant -f build/build.xml bootstrap'
-              withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
-                  sh 'ant -f build/build.xml analyze -propertyfile ' + FILE
-              }
-          }
+      }
+
+      stage('Static Analysis') {
+          def pmd = scanForIssues tool: [$class: 'Pmd'], pattern: '**/pmd.xml'
+          publishIssues issues:[pmd], useStableBuildAsReference: true
       }
 
       stage('Unit Tests') {
-          checkout scm
           withAnt(installation: 'ant') {
               withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
                   sh 'ant -f build/build.xml bootstrap'
@@ -51,7 +49,6 @@ node {
       }
 
       stage('Test Deployment') {
-          checkout scm
           withAnt(installation: 'ant') {
               withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
                   sh 'ant -f build/build.xml bootstrap'
