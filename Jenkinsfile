@@ -31,7 +31,7 @@ def updateGithubCommitStatus(build) {
 }
 node {
       stage('Static Analysis') {
-          def antParams = '';
+          def antParams = '-Dsrc.dir=src/ ';
           antParams += '-Dpmd.maxRuleViolations=1 '
           antParams += '-Dpmd.rulesets=config/pmd.xml'
           checkout scm
