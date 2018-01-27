@@ -34,7 +34,7 @@ node {
           checkout scm
           withAnt(installation: 'ant') {
               sh 'ant -f build/build.xml bootstrap'
-              withCredentials([file(credentialsId: 'secret', variable: 'FILE')]) {
+              withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
                   sh 'ant -f build/build.xml analyze -propertyfile ' + FILE
               }
           }
@@ -43,7 +43,7 @@ node {
       stage('Unit Tests') {
           checkout scm
           withAnt(installation: 'ant') {
-              withCredentials([file(credentialsId: 'secret', variable: 'FILE')]) {
+              withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
                   sh 'ant -f build/build.xml bootstrap'
                   sh 'ant -f build/build.xml test -propertyfile ' + FILE
               }
