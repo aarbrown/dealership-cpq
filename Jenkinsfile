@@ -49,4 +49,14 @@ node {
               }
           }
       }
+
+      stage('Test Deployment') {
+          checkout scm
+          withAnt(installation: 'ant') {
+              withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
+                  sh 'ant -f build/build.xml bootstrap'
+                  sh 'ant -f build/build.xml check-deploy -propertyfile ' + FILE
+              }
+          }
+      }
 }
