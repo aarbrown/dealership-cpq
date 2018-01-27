@@ -148,11 +148,9 @@
     </target>
 
     <!-- ============================
-          BUILD
+          CHECK DEPLOY
          ============================ -->
-    <target name="build" depends="analyze,test"
-            description="Executes analysis, tests, and does a check deploy against the build org">
-
+    <target name="check-deploy" depends="resolve" description="check deploy to build environment">
         <delete>
             <fileset dir="../${src.dir}" includes="**/.DS_Store"/>
         </delete>
@@ -162,6 +160,12 @@
             serverurl="${sf.build.serverurl}" deployroot="../${src.dir}"
             maxPoll="${sf.maxPoll}" checkOnly="true" ignoreWarnings="false"/>
     </target>
+
+    <!-- ============================
+          BUILD
+         ============================ -->
+    <target name="build" depends="analyze,test,check-deploy"
+            description="Executes analysis, tests, and does a check deploy against the build org" />
 
     <!-- ============================
           CLEAN
