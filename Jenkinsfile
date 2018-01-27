@@ -34,6 +34,7 @@ node {
           checkout scm
           withAnt(installation: 'ant') {
               sh 'cd build'
+              sh 'ls -la'
               sh 'ant bootstrap'
               sh 'ant analyze'
           }
