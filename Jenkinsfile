@@ -31,13 +31,22 @@ def updateGithubCommitStatus(build) {
 }
 node {
       stage('Static Analysis') {
-          def antParams = '-Dsrc.dir=src/ ';
-          antParams += '-Dpmd.maxRuleViolations=1 '
-          antParams += '-Dpmd.rulesets=config/pmd.xml'
           checkout scm
           withAnt(installation: 'ant') {
               sh 'ant -f build/build.xml bootstrap'
-              sh 'ant -f build/build.xml analyze ' + antParams
+              withCredentials([file(credentialsId: 'secret', variable: 'FILE')]) {
+                  sh 'ant -f build/build.xml analyze -propertyfile ' + FILE
+              }
+          }
+      }
+
+      stage('Unit Tests') {
+          checkout scm
+          withAnt(installation: 'ant') {
+              withCredentials([file(credentialsId: 'secret', variable: 'FILE')]) {
+                  sh 'ant -f build/build.xml bootstrap'
+                  sh 'ant -f build/build.xml test -propertyfile ' + FILE
+              }
           }
       }
 }
