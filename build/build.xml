@@ -7,10 +7,6 @@
     <property environment="env"/>
     <property name="build.dir" value="build"/>
     <property name="lib.dir" value="lib"/>
-    <property name="apexunit.regex.tests" value="*Test*"/>
-    <property name="apexunit.regex.sources" value="*"/>
-    <property name="pmd.maxRuleViolations" value="1"/>
-    <property name="pmd.rulesets" value="config/pmd.xml"/>
 
     <path id="test-path">
         <fileset dir="${lib.dir}/test">
@@ -131,7 +127,7 @@
     <!-- Runs all analysis steps -->
     <target name="analyze" depends="pmd"
             description="Run all static analysis tools."/>
-            
+
     <!-- ============================
           TESTS
          ============================ -->
