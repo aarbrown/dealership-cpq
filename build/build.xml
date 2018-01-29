@@ -118,6 +118,7 @@
         <pmd failonerror="true" maxRuleViolations="${pmd.maxRuleViolations}">
             <ruleset>../${pmd.rulesets}</ruleset>
             <formatter type="text" toConsole="true"/>
+            <formatter type="xml" toFile="pmd-results.xml"/>
             <fileset dir="../${src.dir}">
                 <include name="**/*.cls"/>
                 <include name="**/*.trigger"/>
@@ -130,7 +131,7 @@
     <!-- Runs all analysis steps -->
     <target name="analyze" depends="pmd"
             description="Run all static analysis tools."/>
-
+            
     <!-- ============================
           TESTS
          ============================ -->

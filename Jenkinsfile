@@ -35,7 +35,12 @@ node {
       }
 
       stage('Static Analysis') {
-          pmd canComputeNew: false, defaultEncoding: '', failedTotalAll: '20', failedTotalHigh: '1', failedTotalLow: '14', failedTotalNormal: '5', healthy: '0', pattern: 'build/pmd.xml', unHealthy: '20'
+          withAnt(installation: 'ant') {
+              sh 'ant -f build/build.xml bootstrap'
+              withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
+                  sh 'ant -f build/build.xml analyze -propertyfile ' + FILE
+              }
+          }
       }
 
       stage('Unit Tests') {
@@ -54,5 +59,10 @@ node {
                   sh 'ant -f build/build.xml check-deploy -propertyfile ' + FILE
               }
           }
+      }
+
+      stage('Reporting') {
+          junit 'ApexUnitReport.xml'
+          step([$class: 'PmdPublisher', pattern: '**/pmd-results.xml', unstableTotalAll:'0'])
       }
 }
