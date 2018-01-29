@@ -35,8 +35,7 @@ node {
       }
 
       stage('Static Analysis') {
-          def pmd = scanForIssues tool: [$class: 'Pmd'], pattern: '**/pmd.xml'
-          publishIssues issues:[pmd], useStableBuildAsReference: true
+          pmd canComputeNew: false, defaultEncoding: '', failedTotalAll: '20', failedTotalHigh: '1', failedTotalLow: '14', failedTotalNormal: '5', healthy: '0', pattern: 'build/pmd.xml', unHealthy: '20'
       }
 
       stage('Unit Tests') {
