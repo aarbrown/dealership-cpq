@@ -36,7 +36,6 @@ node {
 
       stage('Static Analysis') {
           withAnt(installation: 'ant') {
-              sh 'ant -f build/build.xml bootstrap'
               withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
                   sh 'ant -f build/build.xml analyze -propertyfile ' + FILE
               }
@@ -46,7 +45,6 @@ node {
       stage('Unit Tests') {
           withAnt(installation: 'ant') {
               withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
-                  sh 'ant -f build/build.xml bootstrap'
                   sh 'ant -f build/build.xml test -propertyfile ' + FILE
               }
           }
@@ -55,14 +53,13 @@ node {
       stage('Test Deployment') {
           withAnt(installation: 'ant') {
               withCredentials([file(credentialsId: 'dealership-build-properties	', variable: 'FILE')]) {
-                  sh 'ant -f build/build.xml bootstrap'
                   sh 'ant -f build/build.xml check-deploy -propertyfile ' + FILE
               }
           }
       }
 
       stage('Reporting') {
-          junit 'ApexUnitReport.xml'
-          step([$class: 'PmdPublisher', pattern: '**/pmd-results.xml', unstableTotalAll:'0'])
+          junit 'build/ApexUnitReport.xml'
+          step([$class: 'PmdPublisher', pattern: 'build/pmd-results.xml', unstableTotalAll:'0'])
       }
 }
