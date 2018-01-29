@@ -61,7 +61,7 @@ node {
       stage('Reporting') {
           junit 'build/ApexUnitReport.xml'
 
-          step([$class: 'PmdPublisher', pattern: 'build/pmd-results.xml', unstableTotalAll:'0'])
+          step([$class: 'PmdPublisher', failedTotalHigh: '1', failedTotalLow: '15', failedTotalNormal: '4', healthy: '0', pattern: 'build/pmd-results.xml', unHealthy: '20', unstableTotalHigh: '0', unstableTotalLow: '5', unstableTotalNormal: '1'])
 
           // publish html
           // snippet generator doesn't include "target:"
