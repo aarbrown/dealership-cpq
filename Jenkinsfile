@@ -60,6 +60,19 @@ node {
 
       stage('Reporting') {
           junit 'build/ApexUnitReport.xml'
+
           step([$class: 'PmdPublisher', pattern: 'build/pmd-results.xml', unstableTotalAll:'0'])
+
+          // publish html
+          // snippet generator doesn't include "target:"
+          // https://issues.jenkins-ci.org/browse/JENKINS-29711.
+          publishHTML (target: [
+              allowMissing: false,
+              alwaysLinkToLastBuild: false,
+              keepAll: true,
+              reportDir: 'build/Report',
+              reportFiles: 'ApexUnitReport.html',
+              reportName: "ApexUnit Report"
+          ])
       }
 }
